@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: yolok8s-manifest
+spec:
+ containers:
+ - image: mkomen/yolo-client v2.0.0
+   name: yolok8s-manifest
+   ports:
+   - containerPort: 3000
+     name: http
+     protocol: TCP
