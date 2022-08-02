@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: yolo-client
+  labels:
+    app: yolo-client
+spec:
+  ports:
+  - port: 3000
+    name: web
+  clusterIP: None
+  selector:
+    app: yolo-client
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: yolo-client
+    spec:
+      containers:
+      - name: yolo-client
+        image: k8s.gcr.io/mkomen/yolo-client:2.0.0
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
